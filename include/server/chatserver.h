@@ -5,6 +5,7 @@
 #include <muduo/net/EventLoop.h>
 #include <string>
 
+// 服务器类，实现网络模块
 class ChatServer {
 public:
     ChatServer(muduo::net::EventLoop* loop,
@@ -23,7 +24,7 @@ private:
     // 组合tcpserver对象
     muduo::net::TcpServer tcp_server_;
     // 组合eventloop对象
-    muduo::net::EventLoop *event_loop_;
+    muduo::net::EventLoop* event_loop_;
 };
 
 #endif

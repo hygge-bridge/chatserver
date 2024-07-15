@@ -1,5 +1,5 @@
 #include "chatserver.h"
-
+#include "chatservice.h"
 #include <functional>
 #include <thread>
 
@@ -19,11 +19,19 @@ ChatServer::ChatServer(muduo::net::EventLoop* loop,
 }
 
 void ChatServer::OnConnection(const muduo::net::TcpConnectionPtr& conn) {
-
+    // 连接断开时应回收对应的socket资源
+    if (!conn->connected()) {
+        conn->shutdown();
+    }
 }
 
-void ChatServer::OnMessage(const muduo::net::TcpConnectionPtr&,
-                muduo::net::Buffer*,
-                muduo::Timestamp) {
-                    
+void ChatServer::OnMessage(const muduo::net::TcpConnectionPtr& conn,
+                muduo::net::Buffer* buffer,
+                muduo::Timestamp time) {
+    // 获取消息类型对应的处理器，利用回调机制实现对应业务方法的调用
+    // 实现网络模块与业务模块的解耦
+    std::string buf = buffer->retrieveAllAsString();
+    json js = json::parse(buf);
+    MsgHandler handler = ChatService::GetInstance().GetMsgHandler(js["msgid"].get<int>());
+    handler(conn, js, time);
 }
