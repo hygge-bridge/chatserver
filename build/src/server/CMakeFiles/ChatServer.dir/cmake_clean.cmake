@@ -5,6 +5,8 @@ file(REMOVE_RECURSE
   "CMakeFiles/ChatServer.dir/chatserver.cc.o.d"
   "CMakeFiles/ChatServer.dir/chatservice.cc.o"
   "CMakeFiles/ChatServer.dir/chatservice.cc.o.d"
+  "CMakeFiles/ChatServer.dir/db/db.cc.o"
+  "CMakeFiles/ChatServer.dir/db/db.cc.o.d"
   "CMakeFiles/ChatServer.dir/main.cc.o"
   "CMakeFiles/ChatServer.dir/main.cc.o.d"
 )
