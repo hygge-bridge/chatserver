@@ -226,6 +226,30 @@ main.cc.s:
 	cd /home/hygge/codes/projectCode/chatserver/build && $(MAKE) $(MAKESILENT) -f src/server/CMakeFiles/ChatServer.dir/build.make src/server/CMakeFiles/ChatServer.dir/main.cc.s
 .PHONY : main.cc.s
 
+usermodel.o: usermodel.cc.o
+.PHONY : usermodel.o
+
+# target to build an object file
+usermodel.cc.o:
+	cd /home/hygge/codes/projectCode/chatserver/build && $(MAKE) $(MAKESILENT) -f src/server/CMakeFiles/ChatServer.dir/build.make src/server/CMakeFiles/ChatServer.dir/usermodel.cc.o
+.PHONY : usermodel.cc.o
+
+usermodel.i: usermodel.cc.i
+.PHONY : usermodel.i
+
+# target to preprocess a source file
+usermodel.cc.i:
+	cd /home/hygge/codes/projectCode/chatserver/build && $(MAKE) $(MAKESILENT) -f src/server/CMakeFiles/ChatServer.dir/build.make src/server/CMakeFiles/ChatServer.dir/usermodel.cc.i
+.PHONY : usermodel.cc.i
+
+usermodel.s: usermodel.cc.s
+.PHONY : usermodel.s
+
+# target to generate assembly for a file
+usermodel.cc.s:
+	cd /home/hygge/codes/projectCode/chatserver/build && $(MAKE) $(MAKESILENT) -f src/server/CMakeFiles/ChatServer.dir/build.make src/server/CMakeFiles/ChatServer.dir/usermodel.cc.s
+.PHONY : usermodel.cc.s
+
 # Help Target
 help:
 	@echo "The following are some of the valid targets for this Makefile:"
@@ -247,6 +271,9 @@ help:
 	@echo "... main.o"
 	@echo "... main.i"
 	@echo "... main.s"
+	@echo "... usermodel.o"
+	@echo "... usermodel.i"
+	@echo "... usermodel.s"
 .PHONY : help
 
 

@@ -32,5 +32,22 @@ void ChatService::Login(const muduo::net::TcpConnectionPtr& conn, json& js, mudu
 }
 
 void ChatService::Register(const muduo::net::TcpConnectionPtr& conn, json& js, muduo::Timestamp time) {
-    std::cout << "do Register()" << std::endl;
+    std::string name = js["name"];
+    std::string password = js["password"];
+    User user;
+    user.SetName(name);
+    user.SetPassword(password);
+    bool insert_state = user_model_.Insert(user);
+    // 填写json响应
+    json response;
+    response[kMsgId] = kRedisterAckMsg;
+    if (insert_state) {
+        response[kId] = user.GetId();
+        response[kErrNo] = 0;
+    }
+    else {
+        response[kErrNo] = 1;
+        response[kErrMsg] = "Failed to insert into user!";
+    }
+    conn->send(response.dump());
 }

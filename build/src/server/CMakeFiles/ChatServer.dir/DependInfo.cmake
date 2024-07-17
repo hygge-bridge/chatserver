@@ -12,6 +12,7 @@ set(CMAKE_DEPENDS_DEPENDENCY_FILES
   "/home/hygge/codes/projectCode/chatserver/src/server/chatservice.cc" "src/server/CMakeFiles/ChatServer.dir/chatservice.cc.o" "gcc" "src/server/CMakeFiles/ChatServer.dir/chatservice.cc.o.d"
   "/home/hygge/codes/projectCode/chatserver/src/server/db/db.cc" "src/server/CMakeFiles/ChatServer.dir/db/db.cc.o" "gcc" "src/server/CMakeFiles/ChatServer.dir/db/db.cc.o.d"
   "/home/hygge/codes/projectCode/chatserver/src/server/main.cc" "src/server/CMakeFiles/ChatServer.dir/main.cc.o" "gcc" "src/server/CMakeFiles/ChatServer.dir/main.cc.o.d"
+  "/home/hygge/codes/projectCode/chatserver/src/server/usermodel.cc" "src/server/CMakeFiles/ChatServer.dir/usermodel.cc.o" "gcc" "src/server/CMakeFiles/ChatServer.dir/usermodel.cc.o.d"
   )
 
 # Targets to which this target links.

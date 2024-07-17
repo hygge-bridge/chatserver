@@ -1,6 +1,8 @@
 #ifndef CHAT_SERVICE_H
 #define CHAT_SERVICE_H
 
+#include "usermodel.h"
+
 #include <muduo/net/TcpServer.h>
 #include <json.h>
 #include <functional>
@@ -35,6 +37,8 @@ private:
 
     // 消息类型与消息处理器的映射表
     std::unordered_map<int, MsgHandler> handler_map_;
+
+    UserModel user_model_;  // user表的数据操作类
 };
 
 #endif

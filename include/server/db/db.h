@@ -7,7 +7,7 @@
 // 数据库配置信息,
 static const std::string server = "127.0.0.1";
 static const std::string user = "root";
-static const std::string password = "123456";
+static const std::string password = "letusmove8";
 static const std::string dbname = "chat";
 
 // 数据库操作类
@@ -28,6 +28,9 @@ public:
 
     // 查询操作
     MYSQL_RES* Query(const std::string& sql);
+
+    // 获取连接
+    MYSQL* GetConnection() { return conn_; }
 
 private:
     MYSQL* conn_;  // mysql连接

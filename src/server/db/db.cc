@@ -18,7 +18,7 @@ bool MySql::Connect() {
         // 设置编码格式
         mysql_query(conn_, "set names gbk");
     }
-    return p != nullptr;
+    return p;
 }
 
 bool MySql::Update(const std::string& sql) {
