@@ -3,12 +3,16 @@
 
 #include <string>
 
+// 用户在线状态
+const std::string kOffline = "offline";  // 离线
+const std::string kOnline = "online";    // 在线
+
 // user表的orm类
 class User {
 public:
     // id为-1时表示表中无该用户，状态默认为offline下线模式
     User(int id = -1, const std::string& name = "", 
-            const std::string& password = "", const std::string& state = "offline")
+            const std::string& password = "", const std::string& state = kOffline)
         : id_(id)
         , name_(name)
         , password_(password)
@@ -19,10 +23,10 @@ public:
     void SetPassword(const std::string& password) { password_ = password; }
     void SetState(const std::string& state) { state_ = state; }
 
-    int GetId() { return id_; }
-    std::string GetName() { return name_; }
-    std::string GetPassword() { return password_; }
-    std::string GetState() { return state_; }
+    int GetId() const { return id_; }
+    std::string GetName() const { return name_; }
+    std::string GetPassword() const { return password_; }
+    std::string GetState() const { return state_; }
 private:
     int id_;
     std::string name_;

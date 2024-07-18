@@ -28,7 +28,32 @@ MsgHandler ChatService::GetMsgHandler(int msgid) {
 }
 
 void ChatService::Login(const muduo::net::TcpConnectionPtr& conn, json& js, muduo::Timestamp time) {
-    std::cout << "do login()" << std::endl;
+    int id = js["id"];
+    std::string password = js["password"];
+    User user = user_model_.Query(id);
+
+    json response;
+    response[kMsgId] = kLoginAckMsg;
+    // 账户密码均正确
+    if (user.GetId() == id && user.GetPassword() == password) {
+        // 用户已经登录
+        if (user.GetState() == kOnline) {
+            response[kErrNo] = 2;
+            response[kErrMsg] = "User is logged in!";
+        }
+        else {
+            // 更新状态几乎不会错，所以这里就不用判断返回值了
+            user.SetState(kOnline);
+            user_model_.UpdateState(user);
+            response[kErrNo] = 0;
+            response[kId] = id;
+        }
+    }
+    else {
+        response[kErrNo] = 1;
+        response[kErrMsg] = "Incorrect account or password!";
+    }
+    conn->send(response.dump());
 }
 
 void ChatService::Register(const muduo::net::TcpConnectionPtr& conn, json& js, muduo::Timestamp time) {
