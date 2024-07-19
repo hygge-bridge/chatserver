@@ -15,7 +15,9 @@ ChatService::ChatService() {
     handler_map_.insert({kRegisterMsg, std::bind(&ChatService::Register, this, std::placeholders::_1, 
                         std::placeholders::_2, std::placeholders::_3)});   
     handler_map_.insert({kOneToOneChatMsg, std::bind(&ChatService::OneToOneChat, this, std::placeholders::_1, 
-                        std::placeholders::_2, std::placeholders::_3)});                    
+                        std::placeholders::_2, std::placeholders::_3)});    
+    handler_map_.insert({kAddFriendMsg, std::bind(&ChatService::AddFriend, this, std::placeholders::_1, 
+                        std::placeholders::_2, std::placeholders::_3)});                 
 }
 
 MsgHandler ChatService::GetMsgHandler(int msgid) {
@@ -53,12 +55,25 @@ void ChatService::Login(const muduo::net::TcpConnectionPtr& conn, json& js, mudu
             user_model_.UpdateState(user);
             response[kErrNo] = 0;
             response[kId] = id;
-            // 查看是否有离线消息
+
+            // 查看是否有离线消息，如果有就返回
             std::vector<std::string> offlinemsg_vec = offlinemsg_model_.Query(id);
             if (!offlinemsg_vec.empty()) {
                 response[kMsg] = offlinemsg_vec;
                 offlinemsg_model_.Erase(id);
             }
+
+            // 返回好友列表
+            std::vector<User> user_vec = friend_model_.Query(id);
+            std::vector<std::string> friends;
+            for (const User& user : user_vec) {
+                json temp;
+                temp["id"] = user.GetId();
+                temp["name"] = user.GetName();
+                temp["state"] = user.GetState();
+                friends.push_back(temp.dump());
+            }
+            response[kFriendList] = friends;
         }
     }
     else {
@@ -101,6 +116,12 @@ void ChatService::OneToOneChat(const muduo::net::TcpConnectionPtr& conn, json& j
         }
     }
     offlinemsg_model_.Insert(toid, js.dump());
+}
+
+void ChatService::AddFriend(const muduo::net::TcpConnectionPtr& conn, json& js, muduo::Timestamp time) {
+    int userid = js["id"];
+    int friendid = js["friendid"];
+    friend_model_.Insert(userid, friendid);
 }
 
 // 当客户端断开连接时，需要重置用户的在线状态，将其设置为离线

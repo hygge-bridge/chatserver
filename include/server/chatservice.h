@@ -3,6 +3,7 @@
 
 #include "usermodel.h"
 #include "offlinemsgmodel.h"
+#include "friendmodel.h"
 
 #include <muduo/net/TcpServer.h>
 #include <json.h>
@@ -29,6 +30,9 @@ public:
 
     // 一对一聊天业务
     void OneToOneChat(const muduo::net::TcpConnectionPtr& conn, json& js, muduo::Timestamp time);
+
+    // 添加好友业务
+    void AddFriend(const muduo::net::TcpConnectionPtr& conn, json& js, muduo::Timestamp time);
 
     // 获取消息处理器
     MsgHandler GetMsgHandler(int msgid);
@@ -58,6 +62,7 @@ private:
     // 对应表的数据操作类
     UserModel user_model_;  // user表
     OfflineMsgModel offlinemsg_model_;  // offlinemessage表
+    FriendModel friend_model_;  // friend表
 };
 
 #endif

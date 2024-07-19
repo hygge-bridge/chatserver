@@ -264,6 +264,7 @@ src/server/CMakeFiles/ChatServer.dir/main.cc.o: \
  /home/hygge/codes/projectCode/chatserver/include/server/usermodel.h \
  /home/hygge/codes/projectCode/chatserver/include/server/user.h \
  /home/hygge/codes/projectCode/chatserver/include/server/offlinemsgmodel.h \
+ /home/hygge/codes/projectCode/chatserver/include/server/friendmodel.h \
  /home/hygge/codes/projectCode/chatserver/thirdparty/json.h \
  /usr/include/c++/11/cassert /usr/include/c++/11/ciso646 \
  /usr/include/c++/11/numeric /usr/include/c++/11/bits/stl_numeric.h \

@@ -202,6 +202,30 @@ db/db.cc.s:
 	cd /home/hygge/codes/projectCode/chatserver/build && $(MAKE) $(MAKESILENT) -f src/server/CMakeFiles/ChatServer.dir/build.make src/server/CMakeFiles/ChatServer.dir/db/db.cc.s
 .PHONY : db/db.cc.s
 
+friendmodel.o: friendmodel.cc.o
+.PHONY : friendmodel.o
+
+# target to build an object file
+friendmodel.cc.o:
+	cd /home/hygge/codes/projectCode/chatserver/build && $(MAKE) $(MAKESILENT) -f src/server/CMakeFiles/ChatServer.dir/build.make src/server/CMakeFiles/ChatServer.dir/friendmodel.cc.o
+.PHONY : friendmodel.cc.o
+
+friendmodel.i: friendmodel.cc.i
+.PHONY : friendmodel.i
+
+# target to preprocess a source file
+friendmodel.cc.i:
+	cd /home/hygge/codes/projectCode/chatserver/build && $(MAKE) $(MAKESILENT) -f src/server/CMakeFiles/ChatServer.dir/build.make src/server/CMakeFiles/ChatServer.dir/friendmodel.cc.i
+.PHONY : friendmodel.cc.i
+
+friendmodel.s: friendmodel.cc.s
+.PHONY : friendmodel.s
+
+# target to generate assembly for a file
+friendmodel.cc.s:
+	cd /home/hygge/codes/projectCode/chatserver/build && $(MAKE) $(MAKESILENT) -f src/server/CMakeFiles/ChatServer.dir/build.make src/server/CMakeFiles/ChatServer.dir/friendmodel.cc.s
+.PHONY : friendmodel.cc.s
+
 main.o: main.cc.o
 .PHONY : main.o
 
@@ -292,6 +316,9 @@ help:
 	@echo "... db/db.o"
 	@echo "... db/db.i"
 	@echo "... db/db.s"
+	@echo "... friendmodel.o"
+	@echo "... friendmodel.i"
+	@echo "... friendmodel.s"
 	@echo "... main.o"
 	@echo "... main.i"
 	@echo "... main.s"
