@@ -4,7 +4,10 @@
 #include <mysql/mysql.h>
 #include <string>
 
-// 数据库配置信息,
+// sql缓冲区的最大尺寸
+static const int kSqlBufSize = 1024;
+
+// 数据库配置信息
 static const std::string server = "127.0.0.1";
 static const std::string user = "root";
 static const std::string password = "letusmove8";

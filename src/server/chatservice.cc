@@ -13,7 +13,9 @@ ChatService::ChatService() {
     handler_map_.insert({kLoginMsg, std::bind(&ChatService::Login, this, std::placeholders::_1, 
                         std::placeholders::_2, std::placeholders::_3)});
     handler_map_.insert({kRegisterMsg, std::bind(&ChatService::Register, this, std::placeholders::_1, 
-                        std::placeholders::_2, std::placeholders::_3)});                      
+                        std::placeholders::_2, std::placeholders::_3)});   
+    handler_map_.insert({kOneToOneChatMsg, std::bind(&ChatService::OneToOneChat, this, std::placeholders::_1, 
+                        std::placeholders::_2, std::placeholders::_3)});                    
 }
 
 MsgHandler ChatService::GetMsgHandler(int msgid) {
@@ -41,16 +43,22 @@ void ChatService::Login(const muduo::net::TcpConnectionPtr& conn, json& js, mudu
             response[kErrNo] = 2;
             response[kErrMsg] = "The user has already logged in!";
         }
-        else {
+        else {  
+            // 登录成功，保存连接
             {
                 std::lock_guard<std::mutex> lock(conn_mutex_);
                 conn_map_.insert({id, conn});
             }
-            // 更新状态几乎不会错，所以这里就不用判断返回值了
             user.SetState("online");
             user_model_.UpdateState(user);
             response[kErrNo] = 0;
             response[kId] = id;
+            // 查看是否有离线消息
+            std::vector<std::string> offlinemsg_vec = offlinemsg_model_.Query(id);
+            if (!offlinemsg_vec.empty()) {
+                response[kMsg] = offlinemsg_vec;
+                offlinemsg_model_.Erase(id);
+            }
         }
     }
     else {
@@ -79,6 +87,20 @@ void ChatService::Register(const muduo::net::TcpConnectionPtr& conn, json& js, m
         response[kErrMsg] = "Failed to insert into user!";
     }
     conn->send(response.dump());
+}
+
+// 用户在线时直接转化消息，用户离线时将消息存入离线消息表中
+void ChatService::OneToOneChat(const muduo::net::TcpConnectionPtr& conn, json& js, muduo::Timestamp time) {
+    int toid = js[kToId];
+    {   
+        std::lock_guard<std::mutex> lock(conn_mutex_);
+        auto it = conn_map_.find(toid);
+        if (it != conn_map_.end()) {
+            it->second->send(js.dump());
+            return;
+        }
+    }
+    offlinemsg_model_.Insert(toid, js.dump());
 }
 
 // 当客户端断开连接时，需要重置用户的在线状态，将其设置为离线

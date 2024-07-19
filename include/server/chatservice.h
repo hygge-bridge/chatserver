@@ -2,6 +2,7 @@
 #define CHAT_SERVICE_H
 
 #include "usermodel.h"
+#include "offlinemsgmodel.h"
 
 #include <muduo/net/TcpServer.h>
 #include <json.h>
@@ -12,7 +13,7 @@
 using json = nlohmann::json;
 
 // 消息处理器
-using MsgHandler = std::function<void(const muduo::net::TcpConnectionPtr&, json &, muduo::Timestamp)>;
+using MsgHandler = std::function<void(const muduo::net::TcpConnectionPtr&, json&, muduo::Timestamp)>;
 
 // 业务处理类
 class ChatService {
@@ -25,6 +26,9 @@ public:
 
     // 注册业务
     void Register(const muduo::net::TcpConnectionPtr& conn, json& js, muduo::Timestamp time);
+
+    // 一对一聊天业务
+    void OneToOneChat(const muduo::net::TcpConnectionPtr& conn, json& js, muduo::Timestamp time);
 
     // 获取消息处理器
     MsgHandler GetMsgHandler(int msgid);
@@ -48,7 +52,9 @@ private:
     // 维护连接映射表的线程安全的锁
     std::mutex conn_mutex_;
 
-    UserModel user_model_;  // user表的数据操作类
+    // 对应表的数据操作类
+    UserModel user_model_;  // user表
+    OfflineMsgModel offlinemsg_model_;  // offlinemessage表
 };
 
 #endif

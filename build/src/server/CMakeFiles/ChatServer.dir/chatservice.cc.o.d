@@ -132,9 +132,14 @@ src/server/CMakeFiles/ChatServer.dir/chatservice.cc.o: \
  /usr/include/x86_64-linux-gnu/bits/types/error_t.h \
  /usr/include/c++/11/bits/charconv.h \
  /usr/include/c++/11/bits/basic_string.tcc \
- /usr/include/muduo/net/TcpServer.h /usr/include/muduo/base/Atomic.h \
- /usr/include/muduo/base/noncopyable.h /usr/include/muduo/base/Types.h \
- /usr/include/string.h /usr/include/strings.h /usr/include/assert.h \
+ /home/hygge/codes/projectCode/chatserver/include/server/offlinemsgmodel.h \
+ /usr/include/c++/11/vector /usr/include/c++/11/bits/stl_uninitialized.h \
+ /usr/include/c++/11/bits/stl_vector.h \
+ /usr/include/c++/11/bits/stl_bvector.h \
+ /usr/include/c++/11/bits/vector.tcc /usr/include/muduo/net/TcpServer.h \
+ /usr/include/muduo/base/Atomic.h /usr/include/muduo/base/noncopyable.h \
+ /usr/include/muduo/base/Types.h /usr/include/string.h \
+ /usr/include/strings.h /usr/include/assert.h \
  /usr/include/muduo/net/TcpConnection.h \
  /usr/include/muduo/base/StringPiece.h /usr/include/muduo/net/Callbacks.h \
  /usr/include/muduo/base/Timestamp.h /usr/include/muduo/base/copyable.h \
@@ -184,11 +189,7 @@ src/server/CMakeFiles/ChatServer.dir/chatservice.cc.o: \
  /usr/include/c++/11/bits/enable_special_members.h \
  /usr/include/c++/11/bits/node_handle.h \
  /usr/include/c++/11/bits/unordered_map.h \
- /usr/include/c++/11/bits/erase_if.h /usr/include/c++/11/vector \
- /usr/include/c++/11/bits/stl_uninitialized.h \
- /usr/include/c++/11/bits/stl_vector.h \
- /usr/include/c++/11/bits/stl_bvector.h \
- /usr/include/c++/11/bits/vector.tcc /usr/include/c++/11/bits/stl_algo.h \
+ /usr/include/c++/11/bits/erase_if.h /usr/include/c++/11/bits/stl_algo.h \
  /usr/include/c++/11/bits/algorithmfwd.h \
  /usr/include/c++/11/bits/stl_heap.h \
  /usr/include/c++/11/bits/stl_tempbuf.h \

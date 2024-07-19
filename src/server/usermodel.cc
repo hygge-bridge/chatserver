@@ -4,8 +4,6 @@
 #include <functional>
 #include <iostream>
 
-static const int kSqlBufSize = 1024;
-
 bool UserModel::Insert(User& user) {
     char sql[kSqlBufSize] = {0};
     sprintf(sql, "insert into user(name, password, state) values('%s', '%s', '%s')", 
