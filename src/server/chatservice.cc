@@ -36,12 +36,16 @@ void ChatService::Login(const muduo::net::TcpConnectionPtr& conn, json& js, mudu
     response[kMsgId] = kLoginAckMsg;
     // 账户密码均正确
     if (user.GetId() == id && user.GetPassword() == password) {
-        // 用户已经登录
+        // 用户已经登录，无需重新登陆
         if (user.GetState() == kOnline) {
             response[kErrNo] = 2;
             response[kErrMsg] = "User is logged in!";
         }
         else {
+            {
+                std::lock_guard<std::mutex> lock(conn_mutex_);
+                conn_map_.insert({id, conn});
+            }
             // 更新状态几乎不会错，所以这里就不用判断返回值了
             user.SetState(kOnline);
             user_model_.UpdateState(user);

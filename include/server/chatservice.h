@@ -7,6 +7,7 @@
 #include <json.h>
 #include <functional>
 #include <unordered_map>
+#include <mutex>
 
 using json = nlohmann::json;
 
@@ -37,6 +38,12 @@ private:
 
     // 消息类型与消息处理器的映射表
     std::unordered_map<int, MsgHandler> handler_map_;
+
+    // 存放已登录（在线）用户的连接与id的映射
+    std::unordered_map<int, muduo::net::TcpConnectionPtr> conn_map_;
+
+    // 维护连接映射表的线程安全的锁
+    std::mutex conn_mutex_;
 
     UserModel user_model_;  // user表的数据操作类
 };

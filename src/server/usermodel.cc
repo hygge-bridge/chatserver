@@ -23,7 +23,7 @@ bool UserModel::Insert(User& user) {
 
 User UserModel::Query(int id) {
     char sql[kSqlBufSize] = {0};
-    sprintf(sql, "select * from user where id = %d", id);
+    sprintf(sql, "select id, name, password, state from user where id = %d", id);
     MySql mysql;
     if (mysql.Connect()) {
         //MYSQL_RES* res = mysql.Query(sql);

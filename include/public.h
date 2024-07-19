@@ -14,7 +14,7 @@ enum MsgType {
 
 // 消息内容字段
 const std::string kMsgId = "msgid";  // 消息类型id，对应MsgType
-const std::string kErrNo = "errno";  // 错误号, 0表示成功，1表示错误
+const std::string kErrNo = "errno";  // 错误号, 只有0表示成功
 const std::string kErrMsg = "errmsg"; // 错误内容
 const std::string kId = "id";  // 主键id
 #endif

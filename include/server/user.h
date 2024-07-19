@@ -3,7 +3,7 @@
 
 #include <string>
 
-// 用户在线状态
+// user表的字段信息
 const std::string kOffline = "offline";  // 离线
 const std::string kOnline = "online";    // 在线
 
