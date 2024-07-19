@@ -28,6 +28,9 @@ public:
 
     // 获取消息处理器
     MsgHandler GetMsgHandler(int msgid);
+
+    // 客户端异常退出处理函数
+    void ClientExceptionHandler(const muduo::net::TcpConnectionPtr&);
     
 private:
     ChatService();

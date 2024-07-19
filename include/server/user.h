@@ -3,16 +3,12 @@
 
 #include <string>
 
-// user表的字段信息
-const std::string kOffline = "offline";  // 离线
-const std::string kOnline = "online";    // 在线
-
 // user表的orm类
 class User {
 public:
     // id为-1时表示表中无该用户，状态默认为offline下线模式
     User(int id = -1, const std::string& name = "", 
-            const std::string& password = "", const std::string& state = kOffline)
+            const std::string& password = "", const std::string& state = "offline")
         : id_(id)
         , name_(name)
         , password_(password)

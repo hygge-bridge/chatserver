@@ -37,9 +37,9 @@ void ChatService::Login(const muduo::net::TcpConnectionPtr& conn, json& js, mudu
     // 账户密码均正确
     if (user.GetId() == id && user.GetPassword() == password) {
         // 用户已经登录，无需重新登陆
-        if (user.GetState() == kOnline) {
+        if (user.GetState() == "online") {
             response[kErrNo] = 2;
-            response[kErrMsg] = "User is logged in!";
+            response[kErrMsg] = "The user has already logged in!";
         }
         else {
             {
@@ -47,7 +47,7 @@ void ChatService::Login(const muduo::net::TcpConnectionPtr& conn, json& js, mudu
                 conn_map_.insert({id, conn});
             }
             // 更新状态几乎不会错，所以这里就不用判断返回值了
-            user.SetState(kOnline);
+            user.SetState("online");
             user_model_.UpdateState(user);
             response[kErrNo] = 0;
             response[kId] = id;
@@ -79,4 +79,23 @@ void ChatService::Register(const muduo::net::TcpConnectionPtr& conn, json& js, m
         response[kErrMsg] = "Failed to insert into user!";
     }
     conn->send(response.dump());
+}
+
+// 当客户端断开连接时，需要重置用户的在线状态，将其设置为离线
+void ChatService::ClientExceptionHandler(const muduo::net::TcpConnectionPtr& conn) {
+    User user;
+    {
+        std::lock_guard<std::mutex> lock(conn_mutex_);
+        for (auto it = conn_map_.begin(); it != conn_map_.end(); ++it) {
+            if (it->second == conn) {
+                user.SetId(it->first);
+                conn_map_.erase(it);
+                break;
+            }
+        }
+    }
+    if (user.GetId() != -1) {
+        user.SetState("offline");
+        user_model_.UpdateState(user);
+    }
 }

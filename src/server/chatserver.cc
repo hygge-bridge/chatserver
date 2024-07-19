@@ -21,6 +21,7 @@ ChatServer::ChatServer(muduo::net::EventLoop* loop,
 void ChatServer::OnConnection(const muduo::net::TcpConnectionPtr& conn) {
     // 连接断开时应回收对应的socket资源
     if (!conn->connected()) {
+        ChatService::GetInstance().ClientExceptionHandler(conn);
         conn->shutdown();
     }
 }
