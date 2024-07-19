@@ -14,6 +14,9 @@ public:
 
     // 更新状态
     bool UpdateState(const User& user);
+
+    // 重置所有用户的状态
+    bool ResetState();
 };
 
 

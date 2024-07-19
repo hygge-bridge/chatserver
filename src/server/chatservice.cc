@@ -121,3 +121,7 @@ void ChatService::ClientExceptionHandler(const muduo::net::TcpConnectionPtr& con
         user_model_.UpdateState(user);
     }
 }
+
+void ChatService::Reset() {
+    user_model_.ResetState();
+}

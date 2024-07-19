@@ -35,6 +35,9 @@ public:
 
     // 客户端异常退出处理函数
     void ClientExceptionHandler(const muduo::net::TcpConnectionPtr&);
+
+    // 服务端异常退出处理函数
+    void Reset();
     
 private:
     ChatService();

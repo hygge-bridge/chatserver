@@ -51,3 +51,13 @@ bool UserModel::UpdateState(const User& user) {
     }
     return false;
 }
+
+bool UserModel::ResetState() {
+    char sql[kSqlBufSize] = {0};
+    sprintf(sql, "update user set state = 'offline' where state = 'online'");
+    MySql mysql;
+    if (mysql.Connect() && mysql.Update(sql)) {
+        return true;
+    }
+    return false;
+}
