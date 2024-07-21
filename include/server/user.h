@@ -23,7 +23,7 @@ public:
     std::string GetName() const { return name_; }
     std::string GetPassword() const { return password_; }
     std::string GetState() const { return state_; }
-private:
+protected:
     int id_;
     std::string name_;
     std::string password_;

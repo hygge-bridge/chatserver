@@ -13,11 +13,19 @@ ChatService::ChatService() {
     handler_map_.insert({kLoginMsg, std::bind(&ChatService::Login, this, std::placeholders::_1, 
                         std::placeholders::_2, std::placeholders::_3)});
     handler_map_.insert({kRegisterMsg, std::bind(&ChatService::Register, this, std::placeholders::_1, 
-                        std::placeholders::_2, std::placeholders::_3)});   
+                        std::placeholders::_2, std::placeholders::_3)});  
+
     handler_map_.insert({kOneToOneChatMsg, std::bind(&ChatService::OneToOneChat, this, std::placeholders::_1, 
                         std::placeholders::_2, std::placeholders::_3)});    
     handler_map_.insert({kAddFriendMsg, std::bind(&ChatService::AddFriend, this, std::placeholders::_1, 
-                        std::placeholders::_2, std::placeholders::_3)});                 
+                        std::placeholders::_2, std::placeholders::_3)});    
+
+    handler_map_.insert({kCreateGroupMsg, std::bind(&ChatService::CreateGroup, this, std::placeholders::_1, 
+                        std::placeholders::_2, std::placeholders::_3)});
+    handler_map_.insert({kAddGroupMsg, std::bind(&ChatService::AddGroup, this, std::placeholders::_1, 
+                        std::placeholders::_2, std::placeholders::_3)});  
+    handler_map_.insert({kChatGroupMsg, std::bind(&ChatService::ChatGroup, this, std::placeholders::_1, 
+                        std::placeholders::_2, std::placeholders::_3)});           
 }
 
 MsgHandler ChatService::GetMsgHandler(int msgid) {
@@ -122,6 +130,40 @@ void ChatService::AddFriend(const muduo::net::TcpConnectionPtr& conn, json& js, 
     int userid = js[kFriUserId];
     int friendid = js[kFriendId];
     friend_model_.Insert(userid, friendid);
+}
+
+void ChatService::CreateGroup(const muduo::net::TcpConnectionPtr& conn, json& js, muduo::Timestamp time) {
+    int userid = js[kUserId];
+    std::string groupname = js[kALLGroupName];
+    std::string groupdesc = js[kALLGroupDesc];
+    // 创建群后，将该用户设置为群创建者角色
+    Group group(-1, groupname, groupdesc);
+    if (group_model_.CreateGroup(group)) {
+        group_model_.AddGroup(userid, group.GetId(), kGroupRoleCreator);
+    }
+}
+
+void ChatService::AddGroup(const muduo::net::TcpConnectionPtr& conn, json& js, muduo::Timestamp time) {
+    int userid = js[kUserId];
+    int groupid = js[kGroupGroupid];
+    group_model_.AddGroup(userid, groupid, kGroupRoleNormal);
+}
+
+void ChatService::ChatGroup(const muduo::net::TcpConnectionPtr& conn, json& js, muduo::Timestamp time) {
+    int userid = js[kUserId];
+    int groupid = js[kGroupGroupid];
+    std::vector<int> userid_vec = group_model_.QueryGroupUsers(userid, groupid);
+    std::lock_guard<std::mutex> lock(conn_mutex_);
+    for (int id : userid_vec) {
+        // 用户在线则直接转发，用户离线则将消息存储到离线消息表中
+        auto it = conn_map_.find(id);
+        if (it != conn_map_.end()) {
+            conn->send(js.dump());
+        }
+        else {
+            offlinemsg_model_.Insert(id, js.dump());
+        }
+    }
 }
 
 // 当客户端断开连接时，需要重置用户的在线状态，将其设置为离线

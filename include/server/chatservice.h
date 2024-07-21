@@ -4,6 +4,7 @@
 #include "usermodel.h"
 #include "offlinemsgmodel.h"
 #include "friendmodel.h"
+#include "groupmodel.h"
 
 #include <muduo/net/TcpServer.h>
 #include <json.h>
@@ -34,6 +35,15 @@ public:
     // 添加好友业务
     void AddFriend(const muduo::net::TcpConnectionPtr& conn, json& js, muduo::Timestamp time);
 
+    // 创建群业务
+    void CreateGroup(const muduo::net::TcpConnectionPtr& conn, json& js, muduo::Timestamp time);
+
+    // 用户添加到群业务
+    void AddGroup(const muduo::net::TcpConnectionPtr& conn, json& js, muduo::Timestamp time);
+
+    // 群聊天业务
+    void ChatGroup(const muduo::net::TcpConnectionPtr& conn, json& js, muduo::Timestamp time);
+
     // 获取消息处理器
     MsgHandler GetMsgHandler(int msgid);
 
@@ -60,9 +70,10 @@ private:
     std::mutex conn_mutex_;
 
     // 对应表的数据操作类
-    UserModel user_model_;  // user表
-    OfflineMsgModel offlinemsg_model_;  // offlinemessage表
-    FriendModel friend_model_;  // friend表
+    UserModel user_model_;               // user表
+    OfflineMsgModel offlinemsg_model_;   // offlinemessage表
+    FriendModel friend_model_;           // friend表
+    GroupModel group_model_;             // 组相关表allgroup和groupuser表
 };
 
 #endif

@@ -138,6 +138,9 @@ src/server/CMakeFiles/ChatServer.dir/chatservice.cc.o: \
  /usr/include/c++/11/bits/stl_bvector.h \
  /usr/include/c++/11/bits/vector.tcc \
  /home/hygge/codes/projectCode/chatserver/include/server/friendmodel.h \
+ /home/hygge/codes/projectCode/chatserver/include/server/groupmodel.h \
+ /home/hygge/codes/projectCode/chatserver/include/server/group.h \
+ /home/hygge/codes/projectCode/chatserver/include/server/groupuser.h \
  /usr/include/muduo/net/TcpServer.h /usr/include/muduo/base/Atomic.h \
  /usr/include/muduo/base/noncopyable.h /usr/include/muduo/base/Types.h \
  /usr/include/string.h /usr/include/strings.h /usr/include/assert.h \
