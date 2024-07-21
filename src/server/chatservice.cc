@@ -32,8 +32,8 @@ MsgHandler ChatService::GetMsgHandler(int msgid) {
 }
 
 void ChatService::Login(const muduo::net::TcpConnectionPtr& conn, json& js, muduo::Timestamp time) {
-    int id = js["id"];
-    std::string password = js["password"];
+    int id = js[kUserId];
+    std::string password = js[kUserPwd];
     User user = user_model_.Query(id);
 
     json response;
@@ -41,9 +41,9 @@ void ChatService::Login(const muduo::net::TcpConnectionPtr& conn, json& js, mudu
     // 账户密码均正确
     if (user.GetId() == id && user.GetPassword() == password) {
         // 用户已经登录，无需重新登陆
-        if (user.GetState() == "online") {
-            response[kErrNo] = 2;
-            response[kErrMsg] = "The user has already logged in!";
+        if (user.GetState() == kUserOnline) {
+            response[kMsgErrNo] = 2;
+            response[kMsgErr] = "The user has already logged in!";
         }
         else {  
             // 登录成功，保存连接
@@ -51,10 +51,10 @@ void ChatService::Login(const muduo::net::TcpConnectionPtr& conn, json& js, mudu
                 std::lock_guard<std::mutex> lock(conn_mutex_);
                 conn_map_.insert({id, conn});
             }
-            user.SetState("online");
+            user.SetState(kUserOnline);
             user_model_.UpdateState(user);
-            response[kErrNo] = 0;
-            response[kId] = id;
+            response[kMsgErrNo] = 0;
+            response[kMsgUserId] = id;
 
             // 查看是否有离线消息，如果有就返回
             std::vector<std::string> offlinemsg_vec = offlinemsg_model_.Query(id);
@@ -68,24 +68,24 @@ void ChatService::Login(const muduo::net::TcpConnectionPtr& conn, json& js, mudu
             std::vector<std::string> friends;
             for (const User& user : user_vec) {
                 json temp;
-                temp["id"] = user.GetId();
-                temp["name"] = user.GetName();
-                temp["state"] = user.GetState();
+                temp[kUserId] = user.GetId();
+                temp[kUserName] = user.GetName();
+                temp[kUserState] = user.GetState();
                 friends.push_back(temp.dump());
             }
-            response[kFriendList] = friends;
+            response[kMsgFriendList] = friends;
         }
     }
     else {
-        response[kErrNo] = 1;
-        response[kErrMsg] = "Incorrect account or password!";
+        response[kMsgErrNo] = 1;
+        response[kMsgErr] = "Incorrect account or password!";
     }
     conn->send(response.dump());
 }
 
 void ChatService::Register(const muduo::net::TcpConnectionPtr& conn, json& js, muduo::Timestamp time) {
-    std::string name = js["name"];
-    std::string password = js["password"];
+    std::string name = js[kUserName];
+    std::string password = js[kUserPwd];
     User user;
     user.SetName(name);
     user.SetPassword(password);
@@ -94,19 +94,19 @@ void ChatService::Register(const muduo::net::TcpConnectionPtr& conn, json& js, m
     json response;
     response[kMsgId] = kRedisterAckMsg;
     if (insert_state) {
-        response[kId] = user.GetId();
-        response[kErrNo] = 0;
+        response[kMsgUserId] = user.GetId();
+        response[kMsgErrNo] = 0;
     }
     else {
-        response[kErrNo] = 1;
-        response[kErrMsg] = "Failed to insert into user!";
+        response[kMsgErrNo] = 1;
+        response[kMsgErr] = "Failed to insert into user!";
     }
     conn->send(response.dump());
 }
 
 // 用户在线时直接转化消息，用户离线时将消息存入离线消息表中
 void ChatService::OneToOneChat(const muduo::net::TcpConnectionPtr& conn, json& js, muduo::Timestamp time) {
-    int toid = js[kToId];
+    int toid = js[kMsgToId];
     {   
         std::lock_guard<std::mutex> lock(conn_mutex_);
         auto it = conn_map_.find(toid);
@@ -119,8 +119,8 @@ void ChatService::OneToOneChat(const muduo::net::TcpConnectionPtr& conn, json& j
 }
 
 void ChatService::AddFriend(const muduo::net::TcpConnectionPtr& conn, json& js, muduo::Timestamp time) {
-    int userid = js["id"];
-    int friendid = js["friendid"];
+    int userid = js[kFriUserId];
+    int friendid = js[kFriendId];
     friend_model_.Insert(userid, friendid);
 }
 
@@ -138,7 +138,7 @@ void ChatService::ClientExceptionHandler(const muduo::net::TcpConnectionPtr& con
         }
     }
     if (user.GetId() != -1) {
-        user.SetState("offline");
+        user.SetState(kUserOffline);
         user_model_.UpdateState(user);
     }
 }

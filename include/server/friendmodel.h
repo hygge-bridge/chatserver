@@ -3,6 +3,11 @@
 
 #include "usermodel.h"
 #include <vector>
+#include <string>
+
+// friend表字段
+const std::string kFriUserId = "userid";
+const std::string kFriendId = "friendid";
 
 class FriendModel {
 public:
