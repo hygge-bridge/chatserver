@@ -261,13 +261,14 @@ src/server/CMakeFiles/ChatServer.dir/main.cc.o: \
  /usr/include/muduo/base/Mutex.h /usr/include/muduo/base/CurrentThread.h \
  /usr/include/muduo/net/TimerId.h \
  /home/hygge/codes/projectCode/chatserver/include/server/chatservice.h \
- /home/hygge/codes/projectCode/chatserver/include/server/usermodel.h \
- /home/hygge/codes/projectCode/chatserver/include/server/user.h \
- /home/hygge/codes/projectCode/chatserver/include/server/offlinemsgmodel.h \
- /home/hygge/codes/projectCode/chatserver/include/server/friendmodel.h \
- /home/hygge/codes/projectCode/chatserver/include/server/groupmodel.h \
- /home/hygge/codes/projectCode/chatserver/include/server/group.h \
- /home/hygge/codes/projectCode/chatserver/include/server/groupuser.h \
+ /home/hygge/codes/projectCode/chatserver/include/server/model/usermodel.h \
+ /home/hygge/codes/projectCode/chatserver/include/server/model/user.h \
+ /home/hygge/codes/projectCode/chatserver/include/server/model/offlinemsgmodel.h \
+ /home/hygge/codes/projectCode/chatserver/include/server/model/friendmodel.h \
+ /home/hygge/codes/projectCode/chatserver/include/server/model/usermodel.h \
+ /home/hygge/codes/projectCode/chatserver/include/server/model/groupmodel.h \
+ /home/hygge/codes/projectCode/chatserver/include/server/model/group.h \
+ /home/hygge/codes/projectCode/chatserver/include/server/model/groupuser.h \
  /home/hygge/codes/projectCode/chatserver/thirdparty/json.h \
  /usr/include/c++/11/cassert /usr/include/c++/11/ciso646 \
  /usr/include/c++/11/numeric /usr/include/c++/11/bits/stl_numeric.h \

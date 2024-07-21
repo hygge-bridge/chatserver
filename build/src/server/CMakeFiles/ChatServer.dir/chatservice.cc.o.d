@@ -2,8 +2,8 @@ src/server/CMakeFiles/ChatServer.dir/chatservice.cc.o: \
  /home/hygge/codes/projectCode/chatserver/src/server/chatservice.cc \
  /usr/include/stdc-predef.h \
  /home/hygge/codes/projectCode/chatserver/include/server/chatservice.h \
- /home/hygge/codes/projectCode/chatserver/include/server/usermodel.h \
- /home/hygge/codes/projectCode/chatserver/include/server/user.h \
+ /home/hygge/codes/projectCode/chatserver/include/server/model/usermodel.h \
+ /home/hygge/codes/projectCode/chatserver/include/server/model/user.h \
  /usr/include/c++/11/string \
  /usr/include/x86_64-linux-gnu/c++/11/bits/c++config.h \
  /usr/include/x86_64-linux-gnu/c++/11/bits/os_defines.h \
@@ -132,15 +132,16 @@ src/server/CMakeFiles/ChatServer.dir/chatservice.cc.o: \
  /usr/include/x86_64-linux-gnu/bits/types/error_t.h \
  /usr/include/c++/11/bits/charconv.h \
  /usr/include/c++/11/bits/basic_string.tcc \
- /home/hygge/codes/projectCode/chatserver/include/server/offlinemsgmodel.h \
+ /home/hygge/codes/projectCode/chatserver/include/server/model/offlinemsgmodel.h \
  /usr/include/c++/11/vector /usr/include/c++/11/bits/stl_uninitialized.h \
  /usr/include/c++/11/bits/stl_vector.h \
  /usr/include/c++/11/bits/stl_bvector.h \
  /usr/include/c++/11/bits/vector.tcc \
- /home/hygge/codes/projectCode/chatserver/include/server/friendmodel.h \
- /home/hygge/codes/projectCode/chatserver/include/server/groupmodel.h \
- /home/hygge/codes/projectCode/chatserver/include/server/group.h \
- /home/hygge/codes/projectCode/chatserver/include/server/groupuser.h \
+ /home/hygge/codes/projectCode/chatserver/include/server/model/friendmodel.h \
+ /home/hygge/codes/projectCode/chatserver/include/server/model/usermodel.h \
+ /home/hygge/codes/projectCode/chatserver/include/server/model/groupmodel.h \
+ /home/hygge/codes/projectCode/chatserver/include/server/model/group.h \
+ /home/hygge/codes/projectCode/chatserver/include/server/model/groupuser.h \
  /usr/include/muduo/net/TcpServer.h /usr/include/muduo/base/Atomic.h \
  /usr/include/muduo/base/noncopyable.h /usr/include/muduo/base/Types.h \
  /usr/include/string.h /usr/include/strings.h /usr/include/assert.h \
