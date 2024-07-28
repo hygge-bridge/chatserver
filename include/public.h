@@ -21,12 +21,14 @@ enum MsgType {
 
 
 // 消息内容字段
-const std::string kMsgId = "msgid";             // 消息类型id，对应MsgType
-const std::string kMsgErrNo = "errno";          // 错误号, 只有0表示成功
-const std::string kMsgErr = "errmsg";           // 错误内容
-const std::string kMsgUserId = "id";            // 主键id
-const std::string kMsgToId = "toid";            // 对方的id
-const std::string kMsg = "msg";                 // 消息内容
-const std::string kMsgFriId = "friendid";       // 将要添加为好友的好友id
-const std::string kMsgFriendList = "friend";    // 好友列表
+namespace msgfield {
+    const std::string msgid = "msgid";              // 消息类型id，对应MsgType
+    const std::string errorno = "errorno";          // 错误号, 只有0表示成功
+    const std::string errormsg = "errormsg";        // 错误内容
+    const std::string id = "id";                    // 主键id
+    const std::string toid = "toid";                // 对方的id
+    const std::string msg = "msg";                  // 消息内容
+    const std::string friendid = "friendid";        // 将要添加为好友的好友id
+    const std::string friendlist = "friendlist";    // 好友列表
+}
 #endif

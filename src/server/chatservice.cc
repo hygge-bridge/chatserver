@@ -45,13 +45,13 @@ void ChatService::Login(const muduo::net::TcpConnectionPtr& conn, json& js, mudu
     User user = user_model_.Query(id);
 
     json response;
-    response[kMsgId] = kLoginAckMsg;
+    response[msgfield::msgid] = kLoginAckMsg;
     // 账户密码均正确
     if (user.GetId() == id && user.GetPassword() == password) {
         // 用户已经登录，无需重新登陆
         if (user.GetState() == userfield::online) {
-            response[kMsgErrNo] = 2;
-            response[kMsgErr] = "The user has already logged in!";
+            response[msgfield::errorno] = 2;
+            response[msgfield::errormsg] = "The user has already logged in!";
         }
         else {  
             // 登录成功，保存连接
@@ -61,13 +61,13 @@ void ChatService::Login(const muduo::net::TcpConnectionPtr& conn, json& js, mudu
             }
             user.SetState(userfield::online);
             user_model_.UpdateState(user);
-            response[kMsgErrNo] = 0;
-            response[kMsgUserId] = id;
+            response[msgfield::errorno] = 0;
+            response[msgfield::id] = id;
 
             // 查看是否有离线消息，如果有就返回
             std::vector<std::string> offlinemsg_vec = offlinemsg_model_.Query(id);
             if (!offlinemsg_vec.empty()) {
-                response[kMsg] = offlinemsg_vec;
+                response[msgfield::msg] = offlinemsg_vec;
                 offlinemsg_model_.Erase(id);
             }
 
@@ -81,12 +81,12 @@ void ChatService::Login(const muduo::net::TcpConnectionPtr& conn, json& js, mudu
                 temp[userfield::state] = user.GetState();
                 friends.push_back(temp.dump());
             }
-            response[kMsgFriendList] = friends;
+            response[msgfield::friendlist] = friends;
         }
     }
     else {
-        response[kMsgErrNo] = 1;
-        response[kMsgErr] = "Incorrect account or password!";
+        response[msgfield::errorno] = 1;
+        response[msgfield::errormsg] = "Incorrect account or password!";
     }
     conn->send(response.dump());
 }
@@ -100,21 +100,21 @@ void ChatService::Register(const muduo::net::TcpConnectionPtr& conn, json& js, m
     bool insert_state = user_model_.Insert(user);
     // 填写json响应
     json response;
-    response[kMsgId] = kRedisterAckMsg;
+    response[msgfield::id] = kRedisterAckMsg;
     if (insert_state) {
-        response[kMsgUserId] = user.GetId();
-        response[kMsgErrNo] = 0;
+        response[msgfield::id] = user.GetId();
+        response[msgfield::errorno] = 0;
     }
     else {
-        response[kMsgErrNo] = 1;
-        response[kMsgErr] = "Failed to insert into user!";
+        response[msgfield::errorno] = 1;
+        response[msgfield::errormsg] = "Failed to insert into user!";
     }
     conn->send(response.dump());
 }
 
 // 用户在线时直接转化消息，用户离线时将消息存入离线消息表中
 void ChatService::OneToOneChat(const muduo::net::TcpConnectionPtr& conn, json& js, muduo::Timestamp time) {
-    int toid = js[kMsgToId];
+    int toid = js[msgfield::toid];
     {   
         std::lock_guard<std::mutex> lock(conn_mutex_);
         auto it = conn_map_.find(toid);
