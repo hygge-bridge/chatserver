@@ -40,8 +40,8 @@ MsgHandler ChatService::GetMsgHandler(int msgid) {
 }
 
 void ChatService::Login(const muduo::net::TcpConnectionPtr& conn, json& js, muduo::Timestamp time) {
-    int id = js[kUserId];
-    std::string password = js[kUserPwd];
+    int id = js[userfield::id];
+    std::string password = js[userfield::password];
     User user = user_model_.Query(id);
 
     json response;
@@ -49,7 +49,7 @@ void ChatService::Login(const muduo::net::TcpConnectionPtr& conn, json& js, mudu
     // 账户密码均正确
     if (user.GetId() == id && user.GetPassword() == password) {
         // 用户已经登录，无需重新登陆
-        if (user.GetState() == kUserOnline) {
+        if (user.GetState() == userfield::online) {
             response[kMsgErrNo] = 2;
             response[kMsgErr] = "The user has already logged in!";
         }
@@ -59,7 +59,7 @@ void ChatService::Login(const muduo::net::TcpConnectionPtr& conn, json& js, mudu
                 std::lock_guard<std::mutex> lock(conn_mutex_);
                 conn_map_.insert({id, conn});
             }
-            user.SetState(kUserOnline);
+            user.SetState(userfield::online);
             user_model_.UpdateState(user);
             response[kMsgErrNo] = 0;
             response[kMsgUserId] = id;
@@ -76,9 +76,9 @@ void ChatService::Login(const muduo::net::TcpConnectionPtr& conn, json& js, mudu
             std::vector<std::string> friends;
             for (const User& user : user_vec) {
                 json temp;
-                temp[kUserId] = user.GetId();
-                temp[kUserName] = user.GetName();
-                temp[kUserState] = user.GetState();
+                temp[userfield::id] = user.GetId();
+                temp[userfield::name] = user.GetName();
+                temp[userfield::state] = user.GetState();
                 friends.push_back(temp.dump());
             }
             response[kMsgFriendList] = friends;
@@ -92,8 +92,8 @@ void ChatService::Login(const muduo::net::TcpConnectionPtr& conn, json& js, mudu
 }
 
 void ChatService::Register(const muduo::net::TcpConnectionPtr& conn, json& js, muduo::Timestamp time) {
-    std::string name = js[kUserName];
-    std::string password = js[kUserPwd];
+    std::string name = js[userfield::name];
+    std::string password = js[userfield::password];
     User user;
     user.SetName(name);
     user.SetPassword(password);
@@ -127,31 +127,31 @@ void ChatService::OneToOneChat(const muduo::net::TcpConnectionPtr& conn, json& j
 }
 
 void ChatService::AddFriend(const muduo::net::TcpConnectionPtr& conn, json& js, muduo::Timestamp time) {
-    int userid = js[kFriUserId];
-    int friendid = js[kFriendId];
+    int userid = js[friendfield::userid];
+    int friendid = js[friendfield::friendid];
     friend_model_.Insert(userid, friendid);
 }
 
 void ChatService::CreateGroup(const muduo::net::TcpConnectionPtr& conn, json& js, muduo::Timestamp time) {
-    int userid = js[kUserId];
-    std::string groupname = js[kALLGroupName];
-    std::string groupdesc = js[kALLGroupDesc];
+    int userid = js[userfield::id];
+    std::string groupname = js[allgroupfield::groupname];
+    std::string groupdesc = js[allgroupfield::groupdesc];
     // 创建群后，将该用户设置为群创建者角色
     Group group(-1, groupname, groupdesc);
     if (group_model_.CreateGroup(group)) {
-        group_model_.AddGroup(userid, group.GetId(), kGroupRoleCreator);
+        group_model_.AddGroup(userid, group.GetId(), groupuserfield::creator);
     }
 }
 
 void ChatService::AddGroup(const muduo::net::TcpConnectionPtr& conn, json& js, muduo::Timestamp time) {
-    int userid = js[kUserId];
-    int groupid = js[kGroupGroupid];
-    group_model_.AddGroup(userid, groupid, kGroupRoleNormal);
+    int userid = js[userfield::id];
+    int groupid = js[groupuserfield::groupid];
+    group_model_.AddGroup(userid, groupid, groupuserfield::normal);
 }
 
 void ChatService::ChatGroup(const muduo::net::TcpConnectionPtr& conn, json& js, muduo::Timestamp time) {
-    int userid = js[kUserId];
-    int groupid = js[kGroupGroupid];
+    int userid = js[userfield::id];
+    int groupid = js[groupuserfield::groupid];
     std::vector<int> userid_vec = group_model_.QueryGroupUsers(userid, groupid);
     std::lock_guard<std::mutex> lock(conn_mutex_);
     for (int id : userid_vec) {
@@ -180,7 +180,7 @@ void ChatService::ClientExceptionHandler(const muduo::net::TcpConnectionPtr& con
         }
     }
     if (user.GetId() != -1) {
-        user.SetState(kUserOffline);
+        user.SetState(userfield::offline);
         user_model_.UpdateState(user);
     }
 }

@@ -4,10 +4,13 @@
 #include "usermodel.h"
 #include <vector>
 #include <string>
+#include <unordered_map>
 
 // friend表字段
-const std::string kFriUserId = "userid";
-const std::string kFriendId = "friendid";
+namespace friendfield {
+    const std::string userid = "userid";
+    const std::string friendid = "friendid";
+}
 
 class FriendModel {
 public:
