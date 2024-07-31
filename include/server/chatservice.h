@@ -5,6 +5,7 @@
 #include "offlinemsgmodel.h"
 #include "friendmodel.h"
 #include "groupmodel.h"
+#include "redis.h"
 
 #include <muduo/net/TcpServer.h>
 #include <json.h>
@@ -53,6 +54,9 @@ public:
     // 服务端异常退出处理函数
     void Reset();
     
+    // 处理订阅通道的消息
+    void HandleSubscibedMessage(int id, std::string msg);
+
 private:
     ChatService();
     ChatService(const ChatService&) = delete;
@@ -74,6 +78,9 @@ private:
     OfflineMsgModel offlinemsg_model_;   // offlinemessage表
     FriendModel friend_model_;           // friend表
     GroupModel group_model_;             // 组相关表allgroup和groupuser表
+
+    // redis操作类
+    Redis redis_;
 };
 
 #endif

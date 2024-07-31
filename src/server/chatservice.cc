@@ -26,6 +26,11 @@ ChatService::ChatService() {
                         std::placeholders::_2, std::placeholders::_3)});  
     handler_map_.insert({kChatGroupMsg, std::bind(&ChatService::ChatGroup, this, std::placeholders::_1, 
                         std::placeholders::_2, std::placeholders::_3)});           
+    // 注册redis的消息回调
+    if (redis_.Connect()) {
+        redis_.InitNotifyHandler(std::bind(&ChatService::HandleSubscibedMessage, this, std::placeholders::_1, 
+                        std::placeholders::_2));
+    }
 }
 
 MsgHandler ChatService::GetMsgHandler(int msgid) {
@@ -64,6 +69,9 @@ void ChatService::Login(const muduo::net::TcpConnectionPtr& conn, json& js, mudu
             response[msgfield::errorno] = 0;
             response[msgfield::id] = id;
 
+            // 以id为通道号订阅通道
+            redis_.Subscribe(id);
+            
             // 查看是否有离线消息，如果有就返回
             std::vector<std::string> offlinemsg_vec = offlinemsg_model_.Query(id);
             if (!offlinemsg_vec.empty()) {
@@ -123,7 +131,15 @@ void ChatService::OneToOneChat(const muduo::net::TcpConnectionPtr& conn, json& j
             return;
         }
     }
-    offlinemsg_model_.Insert(toid, js.dump());
+    // 如果用户在其他机器登录，那么发布消息到通道中
+    User user = user_model_.Query(toid);
+    if (user.GetState() == userfield::online) {
+        redis_.Publish(toid, js.dump());
+    }
+    else {  
+        // 用户处于离线状态
+        offlinemsg_model_.Insert(toid, js.dump());
+    }
 }
 
 void ChatService::AddFriend(const muduo::net::TcpConnectionPtr& conn, json& js, muduo::Timestamp time) {
@@ -157,10 +173,16 @@ void ChatService::ChatGroup(const muduo::net::TcpConnectionPtr& conn, json& js, 
     for (int id : userid_vec) {
         // 用户在线则直接转发，用户离线则将消息存储到离线消息表中
         auto it = conn_map_.find(id);
+        User user = user_model_.Query(id);
         if (it != conn_map_.end()) {
             conn->send(js.dump());
         }
+        else if (user.GetState() == userfield::online) {
+            // 用户在其他机器登录，那么发布消息到通道中
+            redis_.Publish(id, js.dump());
+        }
         else {
+            // 用户离线
             offlinemsg_model_.Insert(id, js.dump());
         }
     }
@@ -180,6 +202,9 @@ void ChatService::ClientExceptionHandler(const muduo::net::TcpConnectionPtr& con
         }
     }
     if (user.GetId() != -1) {
+        // 用户已经下线，取消订阅该通道
+        redis_.Unsubscribe(user.GetId());
+        // 设置用户离线
         user.SetState(userfield::offline);
         user_model_.UpdateState(user);
     }
@@ -187,4 +212,17 @@ void ChatService::ClientExceptionHandler(const muduo::net::TcpConnectionPtr& con
 
 void ChatService::Reset() {
     user_model_.ResetState();
+}
+
+// 有可能出出现通知消息时用户下线了，对于这种情况仍然需要存储消息到离线消息表
+void ChatService::HandleSubscibedMessage(int id, std::string msg) {
+    std::lock_guard<std::mutex> lock(conn_mutex_);
+    {
+        auto it = conn_map_.find(id);
+        if (it != conn_map_.end()) {
+            it->second->send(msg);
+            return;
+        }
+    }
+    offlinemsg_model_.Insert(id, msg);
 }
